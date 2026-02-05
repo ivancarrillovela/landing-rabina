@@ -24,8 +24,9 @@ const textoBoton = data?.textoBoton || "Enviar Mensaje";
       </p>
     </div>
 
-    <div class="max-w-xl mx-auto bg-white p-8 md:p-12 shadow-xl border-t-4 border-terracotta-500">
-      <form action="https://formspree.io/f/xdalnzvb" method="POST" class="space-y-6">
+    <div class="max-w-xl mx-auto bg-white p-8 md:p-12 shadow-xl border-t-4 border-terracotta-500 relative">
+      
+      <form id="contacto-form" action="https://formspree.io/f/xdalnzvb" method="POST" class="space-y-6">
         
         <div>
           <label for="nombre" class="block text-sm font-medium text-zinc-700 mb-1">Nombre completo</label>
@@ -48,7 +49,7 @@ const textoBoton = data?.textoBoton || "Enviar Mensaje";
             placeholder="¿Cómo te gustaría ayudar?"></textarea>
         </div>
 
-        <button type="submit" class="w-full bg-zinc-900 text-white font-bold py-4 hover:bg-terracotta-500 transition-colors duration-300">
+        <button id="boton-enviar" type="submit" class="w-full bg-zinc-900 text-white font-bold py-4 hover:bg-terracotta-500 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
           {textoBoton}
         </button>
         
@@ -56,7 +57,85 @@ const textoBoton = data?.textoBoton || "Enviar Mensaje";
           Al enviar este formulario aceptas nuestra política de privacidad.
         </p>
       </form>
+
+      <div id="mensaje-exito" class="hidden absolute inset-0 bg-white flex-col items-center justify-center text-center p-8 z-10 animate-fade-in">
+        <div class="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-3xl mb-4">
+          ✓
+        </div>
+        <h4 class="text-2xl font-bold text-zinc-900 mb-2">¡Mensaje enviado!</h4>
+        <p class="text-zinc-500 mb-6">Gracias por contactar con nosotros. Te responderemos lo antes posible.</p>
+        <button id="boton-nuevo" type="button" class="text-terracotta-500 font-bold hover:underline">
+          Enviar otro mensaje
+        </button>
+      </div>
+
+       <div id="mensaje-error" class="hidden mt-4 p-4 bg-red-50 text-red-600 text-center rounded-sm border border-red-200">
+          Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.
+       </div>
+
     </div>
 
   </div>
 </section>
+
+<script>
+  // Lógica JavaScript para enviar sin recargar
+  const form = document.getElementById('contacto-form') as HTMLFormElement;
+  const statusSuccess = document.getElementById('mensaje-exito');
+  const statusError = document.getElementById('mensaje-error');
+  const submitButton = document.getElementById('boton-enviar') as HTMLButtonElement;
+  const resetButton = document.getElementById('boton-nuevo');
+
+  if (form) {
+    form.addEventListener('submit', async function(event) {
+      event.preventDefault(); // 1. Evita que la página se recargue
+      
+      const data = new FormData(form);
+      const action = form.action;
+
+      // Desactivar botón mientras envía
+      if(submitButton) {
+          submitButton.disabled = true;
+          submitButton.innerText = "Enviando...";
+      }
+
+      try {
+        const response = await fetch(action, {
+          method: 'POST',
+          body: data,
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          // 2. Si todo va bien: Limpia el formulario y muestra mensaje de éxito
+          form.reset();
+          statusSuccess?.classList.remove('hidden');
+          statusSuccess?.classList.add('flex');
+          statusError?.classList.add('hidden');
+        } else {
+          // Si falla Formspree
+          statusError?.classList.remove('hidden');
+        }
+      } catch (error) {
+        // Si falla la red
+        statusError?.classList.remove('hidden');
+      } finally {
+        // Restaurar botón original
+        if(submitButton) {
+            submitButton.disabled = false;
+            submitButton.innerText = "Enviar Mensaje"; // O el texto original si prefieres leerlo del DOM
+        }
+      }
+    });
+  }
+
+  // Botón para volver a mostrar el formulario limpio
+  if (resetButton) {
+    resetButton.addEventListener('click', () => {
+      statusSuccess?.classList.add('hidden');
+      statusSuccess?.classList.remove('flex');
+    });
+  }
+</script>
