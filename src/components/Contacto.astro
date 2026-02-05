@@ -1,15 +1,26 @@
 ---
 // src/components/Contacto.astro
+import { createReader } from '@keystatic/core/reader';
+import keystaticConfig from '../../keystatic.config';
+
+const reader = createReader(process.cwd(), keystaticConfig);
+const data = await reader.singletons.contacto.read();
+
+// Valores por defecto
+const etiqueta = data?.etiqueta || "Hablemos";
+const titulo = data?.titulo || "¿Quieres colaborar con el proyecto?";
+const descripcion = data?.descripcion || "Buscamos socios, inversores y voluntarios que crean en el potencial humano de África tanto como nosotros.";
+const textoBoton = data?.textoBoton || "Enviar Mensaje";
 ---
 
 <section id="contacto" class="bg-zinc-50 py-24">
   <div class="container mx-auto px-6 lg:px-12">
     
     <div class="max-w-2xl mx-auto text-center mb-16">
-      <h2 class="text-terracotta-500 font-bold tracking-widest uppercase text-sm mb-2">Hablemos</h2>
-      <h3 class="text-4xl font-bold text-zinc-900 mb-4">¿Quieres colaborar con el proyecto?</h3>
+      <h2 class="text-terracotta-500 font-bold tracking-widest uppercase text-sm mb-2">{etiqueta}</h2>
+      <h3 class="text-4xl font-bold text-zinc-900 mb-4">{titulo}</h3>
       <p class="text-zinc-500">
-        Buscamos socios, inversores y voluntarios que crean en el potencial humano de África tanto como nosotros.
+        {descripcion}
       </p>
     </div>
 
@@ -38,7 +49,7 @@
         </div>
 
         <button type="submit" class="w-full bg-zinc-900 text-white font-bold py-4 hover:bg-terracotta-500 transition-colors duration-300">
-          Enviar Mensaje
+          {textoBoton}
         </button>
         
         <p class="text-xs text-center text-zinc-400 mt-4">

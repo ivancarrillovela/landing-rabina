@@ -1,11 +1,22 @@
 ---
 // src/components/Pilares.astro
 import { getCollection } from 'astro:content';
+import { createReader } from '@keystatic/core/reader'; // Importamos el reader
+import keystaticConfig from '../../keystatic.config';
 
-// Leemos SOLO del CMS. Si está vacío, devuelve array vacío y no se pinta nada.
+// 1. Datos de las Tarjetas (Colección)
 const pilares = await getCollection('pilares');
 
-// Si quieres ocultar toda la sección si no hay pilares:
+// 2. Datos de la Intro (Nuevo Singleton)
+const reader = createReader(process.cwd(), keystaticConfig);
+const introData = await reader.singletons.pilaresIntro.read();
+
+// Valores por defecto por si no has rellenado el panel aún
+const etiqueta = introData?.etiqueta || "Nuestro Enfoque";
+const titulo = introData?.titulo || "Donde creamos valor.";
+const descripcion = introData?.descripcion || "Nos alejamos del modelo asistencialista para centrarnos en el desarrollo de capacidades a largo plazo.";
+
+// Solo ocultamos si no hay tarjetas, el texto siempre se muestra (o el defecto)
 if (!pilares || pilares.length === 0) return null;
 ---
 
@@ -14,11 +25,11 @@ if (!pilares || pilares.length === 0) return null;
     
     <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-zinc-800 pb-8">
       <div>
-        <h2 class="text-terracotta-500 font-bold tracking-widest uppercase text-sm mb-2">Nuestro Enfoque</h2>
-        <h3 class="text-4xl md:text-5xl font-bold">Donde creamos valor.</h3>
+        <h2 class="text-terracotta-500 font-bold tracking-widest uppercase text-sm mb-2">{etiqueta}</h2>
+        <h3 class="text-4xl md:text-5xl font-bold">{titulo}</h3>
       </div>
       <p class="text-zinc-400 max-w-md mt-6 md:mt-0 text-right">
-        Nos alejamos del modelo asistencialista para centrarnos en el desarrollo de capacidades a largo plazo.
+        {descripcion}
       </p>
     </div>
 
