@@ -1,7 +1,8 @@
 import { defineCollection, z } from 'astro:content';
 
+// Definimos la colección de PILARES como 'data' (YAML)
 const pilares = defineCollection({
-  type: 'content', // O 'data' si usas yaml/json, keystatic por defecto usa markdoc/yaml
+  type: 'data', // <--- ESTO ES LA CLAVE (antes era 'content' por defecto)
   schema: z.object({
     titulo: z.string(),
     descripcion: z.string(),
@@ -9,10 +10,19 @@ const pilares = defineCollection({
   }),
 });
 
-// El Hero al ser singleton se guarda un poco diferente, pero podemos leerlo directo
-// No es estrictamente necesario definirlo aquí si usamos el reader de keystatic,
-// pero para usar la API nativa de Astro:
+// Definimos la colección de HERO también como 'data'
+const hero = defineCollection({
+  type: 'data',
+  schema: z.object({
+    titulo: z.string().optional(),
+    subtitulo: z.string().optional(),
+    descripcion: z.string().optional(),
+    textoBoton: z.string().optional(),
+    imagen: z.string().optional(),
+  }),
+});
 
 export const collections = {
   pilares,
+  hero,
 };
