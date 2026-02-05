@@ -1,0 +1,40 @@
+---
+// src/components/Pilares.astro
+import { getCollection } from 'astro:content';
+
+// Leemos SOLO del CMS. Si está vacío, devuelve array vacío y no se pinta nada.
+const pilares = await getCollection('pilares');
+
+// Si quieres ocultar toda la sección si no hay pilares:
+if (!pilares || pilares.length === 0) return null;
+---
+
+<section class="bg-zinc-900 py-24 text-white">
+  <div class="container mx-auto px-6 lg:px-12">
+    
+    <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-zinc-800 pb-8">
+      <div>
+        <h2 class="text-terracotta-500 font-bold tracking-widest uppercase text-sm mb-2">Nuestro Enfoque</h2>
+        <h3 class="text-4xl md:text-5xl font-bold">Donde creamos valor.</h3>
+      </div>
+      <p class="text-zinc-400 max-w-md mt-6 md:mt-0 text-right">
+        Nos alejamos del modelo asistencialista para centrarnos en el desarrollo de capacidades a largo plazo.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {pilares.map((pilar) => (
+        <div class="group p-8 border border-zinc-800 hover:border-terracotta-500/50 bg-zinc-900 hover:bg-zinc-800/50 transition-all duration-500 cursor-default">
+          <div class="w-12 h-12 bg-zinc-800 rounded-full flex items-center justify-center text-2xl mb-6 group-hover:bg-terracotta-500 group-hover:text-white transition-colors">
+            {pilar.data.icono}
+          </div>
+          <h4 class="text-xl font-bold mb-4">{pilar.data.titulo}</h4>
+          <p class="text-zinc-400 leading-relaxed group-hover:text-zinc-300">
+            {pilar.data.descripcion}
+          </p>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>

@@ -1,0 +1,65 @@
+---
+// src/components/Hero.astro
+import { createReader } from '@keystatic/core/reader';
+import keystaticConfig from '../../keystatic.config';
+
+const reader = createReader(process.cwd(), keystaticConfig);
+const data = await reader.singletons.hero.read();
+
+// Si no hay datos (data es null), no renderizamos la sección para evitar errores
+if (!data) return null;
+
+const { titulo, subtitulo, descripcion, textoBoton, imagen } = data;
+---
+
+<section class="relative w-full min-h-[95vh] bg-zinc-50 flex items-center overflow-hidden">
+  <div class="container mx-auto px-6 lg:px-12 relative z-10 pt-20 pb-12">
+    <div class="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+
+      <div class="w-full lg:w-1/2 space-y-8">
+        <div class="flex items-center gap-3">
+          <span class="w-12 h-[1px] bg-terracotta-500"></span>
+          <span class="text-terracotta-500 text-sm font-bold tracking-widest uppercase">
+            Inversión en Talento
+          </span>
+        </div>
+
+        <h1 class="text-6xl lg:text-7xl xl:text-8xl font-bold text-zinc-900 leading-[0.95] tracking-tighter">
+          {titulo} <br/>
+          <span class="italic font-serif text-terracotta-500">{subtitulo}</span>
+        </h1>
+
+        <p class="text-xl text-zinc-600 max-w-lg leading-relaxed font-light border-l-2 border-zinc-200 pl-6">
+          {descripcion}
+        </p>
+
+        <div class="flex flex-wrap gap-5 pt-6">
+          <a href="#proyectos" class="px-8 py-4 bg-zinc-900 text-white text-lg font-medium rounded-sm hover:bg-terracotta-500 transition-colors duration-300 shadow-xl shadow-zinc-200">
+            {textoBoton}
+          </a>
+           <a href="#colaborar" class="group flex items-center gap-2 px-6 py-4 text-zinc-900 text-lg font-medium hover:text-terracotta-500 transition-colors duration-300">
+            Cómo colaborar
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 group-hover:translate-x-2 transition-transform">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="w-full lg:w-1/2 relative h-[60vh] lg:h-[80vh]">
+        <div class="absolute top-10 right-10 w-full h-full bg-terracotta-100 z-0"></div>
+        <img
+          src={imagen}
+          alt={titulo}
+          class="relative z-10 w-full h-full object-cover shadow-2xl filter sepia-[10%] contrast-[105%]"
+        >
+        <div class="absolute bottom-10 -left-10 z-20 bg-white p-6 shadow-xl max-w-xs hidden md:block border-l-4 border-terracotta-500">
+          <p class="text-zinc-500 text-xs uppercase tracking-wider mb-1">Impacto Real</p>
+          <p class="text-2xl font-bold text-zinc-900">+1.200 Becas</p>
+          <p class="text-sm text-zinc-400 mt-1">Otorgadas en el último año.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
